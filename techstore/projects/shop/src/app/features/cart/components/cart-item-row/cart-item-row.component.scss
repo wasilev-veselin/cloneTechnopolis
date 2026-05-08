@@ -1,0 +1,39 @@
+article {
+  display: grid;
+  grid-template-columns: 5rem 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 0;
+}
+
+img {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+p,
+h3,
+span {
+  margin: 0;
+}
+
+p,
+span {
+  color: #64748b;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+button {
+  min-height: 2.25rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  font: inherit;
+  font-weight: 700;
+}

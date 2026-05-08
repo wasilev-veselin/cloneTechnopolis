@@ -1,0 +1,22 @@
+<article>
+  <a [routerLink]="['/bg/product', product().slug]" class="image-link">
+    <img [src]="product().imageUrl" [alt]="product().title" loading="lazy" />
+  </a>
+
+  <div class="content">
+    <div>
+      <p class="brand">{{ product().brand }}</p>
+      <h3>
+        <a [routerLink]="['/bg/product', product().slug]">{{ product().title }}</a>
+      </h3>
+    </div>
+
+    <div class="meta">
+      <ts-price-tag
+        [amount]="product().price.amount"
+        [currencyCode]="product().price.currencyCode"
+      />
+      <ts-stock-badge [status]="product().stockStatus" />
+    </div>
+  </div>
+</article>

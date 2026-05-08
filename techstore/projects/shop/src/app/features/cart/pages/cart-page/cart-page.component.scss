@@ -1,0 +1,47 @@
+.cart-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header,
+.content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+}
+
+header {
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+.items,
+.empty {
+  border: 1px solid #d9e2df;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.empty {
+  display: grid;
+  gap: 0.5rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+@media (max-width: 820px) {
+  header,
+  .content {
+    grid-template-columns: 1fr;
+  }
+}

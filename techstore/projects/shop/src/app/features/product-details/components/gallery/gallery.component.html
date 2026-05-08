@@ -1,0 +1,13 @@
+@if (selectedImage(); as image) {
+  <figure>
+    <img [src]="image.url" [alt]="image.altText" />
+  </figure>
+}
+
+<div class="thumbs" aria-label="Снимки на продукта">
+  @for (image of images(); track image.url; let index = $index) {
+    <button type="button" [class.active]="index === selectedIndex()" (click)="selectImage(index)">
+      <img [src]="image.url" [alt]="image.altText" />
+    </button>
+  }
+</div>

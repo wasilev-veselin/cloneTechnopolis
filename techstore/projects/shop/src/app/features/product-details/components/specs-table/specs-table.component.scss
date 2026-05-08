@@ -1,0 +1,24 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+caption {
+  margin-bottom: 0.75rem;
+  text-align: left;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.875rem 0;
+  text-align: left;
+}
+
+th {
+  width: 35%;
+  color: #475569;
+}

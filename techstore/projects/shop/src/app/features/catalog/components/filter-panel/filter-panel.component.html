@@ -1,0 +1,12 @@
+<aside aria-label="Филтри">
+  <h2>Филтри</h2>
+  <fieldset>
+    <legend>Марка</legend>
+    @for (brand of brands(); track brand) {
+      <label>
+        <input type="checkbox" [value]="brand" />
+        {{ brand }}
+      </label>
+    }
+  </fieldset>
+</aside>

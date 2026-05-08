@@ -1,0 +1,88 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1.5rem;
+  align-items: center;
+  min-height: 4.5rem;
+  padding: 0 2rem;
+  border-bottom: 1px solid #d7e2df;
+  background: rgb(255 255 255 / 94%);
+  backdrop-filter: blur(16px);
+}
+
+a {
+  color: #164e63;
+  text-decoration: none;
+}
+
+.brand {
+  display: inline-flex;
+  gap: 0.75rem;
+  align-items: center;
+  color: #0f172a;
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.brand-mark {
+  display: inline-grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border-radius: 0.5rem;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 0.875rem;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+nav a,
+.cart-link {
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  font-weight: 700;
+}
+
+nav a.active,
+nav a:hover,
+.cart-link:hover {
+  background: #e6f3f1;
+}
+
+.cart-link {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.cart-link span {
+  display: inline-grid;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border-radius: 999px;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}

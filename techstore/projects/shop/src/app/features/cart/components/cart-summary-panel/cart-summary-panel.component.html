@@ -1,0 +1,17 @@
+<aside>
+  <h2>Обобщение</h2>
+  <div>
+    <span>Продукти</span>
+    <strong>{{ summary().totalQuantity }}</strong>
+  </div>
+  <div>
+    <span>Междинна сума</span>
+    <ts-price-tag
+      [amount]="summary().subtotal.amount"
+      [currencyCode]="summary().subtotal.currencyCode"
+    />
+  </div>
+  <a routerLink="/bg/checkout/shipping">
+    <ts-button>Към поръчка</ts-button>
+  </a>
+</aside>

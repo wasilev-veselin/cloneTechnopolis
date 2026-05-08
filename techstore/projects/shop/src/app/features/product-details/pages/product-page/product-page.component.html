@@ -1,0 +1,25 @@
+<article class="product-page">
+  <app-gallery [images]="product().images" />
+
+  <section class="summary">
+    <p class="brand">{{ product().brand }}</p>
+    <h1>{{ product().title }}</h1>
+    <p class="description">{{ product().description }}</p>
+
+    <app-variant-selector
+      [variants]="product().variants"
+      [(selectedSku)]="selectedSku"
+    />
+
+    <app-product-price-panel
+      [product]="product()"
+      [quantity]="quantity()"
+      (addToCart)="addToCart()"
+    />
+  </section>
+
+  <section class="details">
+    <app-specs-table [specs]="product().specs" />
+    <app-related-products />
+  </section>
+</article>

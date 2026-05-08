@@ -1,0 +1,13 @@
+<section aria-label="Покупка">
+  <div>
+    <ts-price-tag
+      [amount]="product().price.amount"
+      [currencyCode]="product().price.currencyCode"
+    />
+    <ts-stock-badge [status]="product().stockStatus" />
+  </div>
+
+  <p>Количество: {{ quantity() }}</p>
+
+  <ts-button (click)="addToCart.emit()">Добави в количката</ts-button>
+</section>

@@ -1,0 +1,27 @@
+<section class="cart-page">
+  <header>
+    <h1>Количка</h1>
+    <a routerLink="/bg/catalog/all">
+      <ts-button variant="secondary">Обратно към каталога</ts-button>
+    </a>
+  </header>
+
+  @if (cartStore.items().length > 0) {
+    <div class="content">
+      <div class="items">
+        @for (item of cartStore.items(); track item.sku) {
+          <app-cart-item-row
+            [item]="item"
+            (remove)="cartStore.removeItem($event)"
+          />
+        }
+      </div>
+      <app-cart-summary-panel [summary]="cartStore.summary()" />
+    </div>
+  } @else {
+    <div class="empty">
+      <h2>Количката е празна</h2>
+      <p>Добави продукт от каталога или продуктовата страница.</p>
+    </div>
+  }
+</section>

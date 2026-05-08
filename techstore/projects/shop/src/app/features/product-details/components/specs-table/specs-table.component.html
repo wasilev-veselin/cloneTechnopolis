@@ -1,0 +1,11 @@
+<table>
+  <caption>Спецификации</caption>
+  <tbody>
+    @for (spec of specs(); track spec.label) {
+      <tr>
+        <th scope="row">{{ spec.label }}</th>
+        <td>{{ spec.value }}</td>
+      </tr>
+    }
+  </tbody>
+</table>

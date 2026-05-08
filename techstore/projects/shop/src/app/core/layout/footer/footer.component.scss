@@ -1,0 +1,14 @@
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2rem;
+  border-top: 1px solid #d7e2df;
+  color: #475569;
+  font-size: 0.875rem;
+}
+
+span:first-child {
+  color: #0f172a;
+  font-weight: 800;
+}

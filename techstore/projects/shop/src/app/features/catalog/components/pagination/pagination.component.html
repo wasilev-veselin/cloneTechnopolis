@@ -1,0 +1,5 @@
+<nav aria-label="Страници">
+  <button type="button" [disabled]="page() <= 1">Назад</button>
+  <span>Страница {{ page() }} от {{ totalPages() }}</span>
+  <button type="button" [disabled]="page() >= totalPages()">Напред</button>
+</nav>

@@ -1,0 +1,34 @@
+<section class="hero">
+  <div>
+    <p class="eyebrow">Techstore каталог</p>
+    <h1>Техника за работа, gaming и ежедневна употреба</h1>
+    <p>
+      Начален shop изглед с навигация, филтри, сортиране и продуктови карти,
+      готов за връзка с catalog data-access слоя.
+    </p>
+  </div>
+</section>
+
+<section class="catalog">
+  <div class="filters">
+    <app-filter-panel [brands]="brands()" />
+  </div>
+
+  <div class="results">
+    <div class="results-header">
+      <div>
+        <h2>Популярни продукти</h2>
+        <p>{{ products().length }} продукта</p>
+      </div>
+      <app-sort-dropdown />
+    </div>
+
+    <div class="grid">
+      @for (product of products(); track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+
+    <app-pagination [page]="1" [totalPages]="1" />
+  </div>
+</section>

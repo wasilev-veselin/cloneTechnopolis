@@ -1,0 +1,17 @@
+<header class="topbar">
+  <a class="brand" routerLink="/bg/catalog/all" aria-label="Techstore начало">
+    <span class="brand-mark">TS</span>
+    <span>Techstore</span>
+  </a>
+
+  <nav aria-label="Основна навигация">
+    <a routerLink="/bg/catalog/all" routerLinkActive="active">Каталог</a>
+    <a routerLink="/bg/search" routerLinkActive="active">Търсене</a>
+    <a routerLink="/bg/product/lenovo-thinkpad-x1" routerLinkActive="active">Продукт</a>
+  </nav>
+
+  <a class="cart-link" routerLink="/bg/cart" aria-label="Количка">
+    Количка
+    <span>{{ cartStore.totalQuantity() }}</span>
+  </a>
+</header>

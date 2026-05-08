@@ -1,0 +1,15 @@
+<fieldset>
+  <legend>Конфигурация</legend>
+  <div>
+    @for (variant of variants(); track variant.id) {
+      <button
+        type="button"
+        [class.active]="selectedSku() === variant.sku"
+        [disabled]="!variant.available"
+        (click)="selectVariant(variant.sku)"
+      >
+        {{ variant.label }}
+      </button>
+    }
+  </div>
+</fieldset>

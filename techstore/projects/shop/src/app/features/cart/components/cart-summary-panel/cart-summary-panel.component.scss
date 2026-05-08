@@ -1,0 +1,22 @@
+aside {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid #d9e2df;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+h2 {
+  margin: 0;
+}
+
+div {
+  display: flex;
+  justify-content: space-between;
+}
+
+a {
+  display: inline-flex;
+  text-decoration: none;
+}

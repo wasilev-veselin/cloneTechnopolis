@@ -1,0 +1,14 @@
+<aside>
+  <h2>Поръчка</h2>
+  <div>
+    <span>Продукти</span>
+    <strong>{{ cartStore.totalQuantity() }}</strong>
+  </div>
+  <div>
+    <span>Сума</span>
+    <ts-price-tag
+      [amount]="cartStore.subtotal().amount"
+      [currencyCode]="cartStore.subtotal().currencyCode"
+    />
+  </div>
+</aside>
