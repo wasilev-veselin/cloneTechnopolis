@@ -5,10 +5,10 @@
   "compilerOptions": {
     "paths": {
       "@techstore/design-system": [
-        "projects/design-system/src/public-api.ts"
+        "./projects/design-system/src/public-api.ts"
       ],
       "@techstore/shared-util": [
-        "projects/shared-util/src/public-api.ts"
+        "./projects/shared-util/src/public-api.ts"
       ]
     },
     "strict": true,
