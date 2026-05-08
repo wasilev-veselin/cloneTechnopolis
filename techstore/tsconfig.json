@@ -4,14 +4,20 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "design-system": ["./dist/design-system"],
-      "shared-util": ["./dist/shared-util"]
+      "@techstore/design-system": [
+        "projects/design-system/src/public-api.ts"
+      ],
+      "@techstore/shared-util": [
+        "projects/shared-util/src/public-api.ts"
+      ]
     },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
