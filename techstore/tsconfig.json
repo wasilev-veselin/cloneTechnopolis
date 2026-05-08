@@ -3,6 +3,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "design-system": ["./dist/design-system"],
+      "shared-util": ["./dist/shared-util"]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -34,6 +38,18 @@
     },
     {
       "path": "./projects/admin/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/design-system/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/design-system/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/shared-util/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/shared-util/tsconfig.spec.json"
     }
   ]
 }

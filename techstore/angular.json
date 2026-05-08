@@ -145,6 +145,58 @@
           "builder": "@angular/build:unit-test"
         }
       }
+    },
+    "design-system": {
+      "projectType": "library",
+      "root": "projects/design-system",
+      "sourceRoot": "projects/design-system/src",
+      "prefix": "ts",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/design-system/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/design-system/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/design-system/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "shared-util": {
+      "projectType": "library",
+      "root": "projects/shared-util",
+      "sourceRoot": "projects/shared-util/src",
+      "prefix": "ts",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/shared-util/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/shared-util/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/shared-util/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }
