@@ -1,5 +1,1 @@
-/*
- * Public API Surface of shared-util
- */
-
-export * from './lib/shared-util';
+export * from './lib/type-guards/is-defined';
