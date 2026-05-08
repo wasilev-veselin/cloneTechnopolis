@@ -1,0 +1,23 @@
+:host {
+  display: inline-grid;
+  grid-template-columns: 2.25rem 2.5rem 2.25rem;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+button {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  background: #f8fafc;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+output {
+  text-align: center;
+  font-weight: 700;
+}

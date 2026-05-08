@@ -1,0 +1,29 @@
+:host {
+  display: inline-flex;
+}
+
+button {
+  min-height: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+:host(.primary) button {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+:host(.secondary) button {
+  background: #eef6f4;
+  border-color: #b9d9d2;
+  color: #115e59;
+}
+
+:host(.ghost) button {
+  background: transparent;
+  color: #164e63;
+}
