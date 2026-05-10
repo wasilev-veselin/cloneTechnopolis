@@ -6,10 +6,11 @@
     </a>
   </header>
 
-  @if (cartStore.items().length > 0) {
+  @let items = cartStore.items();
+  @if (items.length > 0) {
     <div class="content">
       <div class="items">
-        @for (item of cartStore.items(); track item.sku) {
+        @for (item of items; track item.sku) {
           <app-cart-item-row
             [item]="item"
             (remove)="cartStore.removeItem($event)"

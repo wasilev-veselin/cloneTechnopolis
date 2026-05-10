@@ -5,7 +5,7 @@
       <button
         type="button"
         [class.active]="selectedSku() === variant.sku"
-        [disabled]="!variant.available"
+        [disabled]="variant.availability.status === 'outOfStock'"
         (click)="selectVariant(variant.sku)"
       >
         {{ variant.label }}

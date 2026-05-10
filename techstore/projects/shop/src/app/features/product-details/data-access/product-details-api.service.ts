@@ -1,22 +1,28 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { catchError, throwError } from 'rxjs';
 import type { Observable } from 'rxjs';
-import type { ProductDetails } from '../models/product-details.model';
+import type { ProductDetailsModel } from '../models/product-details.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+export class ProductNotFoundError extends Error {
+  constructor(idOrSlug: string) {
+    super(`Product "${idOrSlug}" was not found.`);
+    this.name = 'ProductNotFoundError';
+  }
+}
+
+@Injectable({ providedIn: 'root' })
 export class ProductDetailsApiService {
-  private readonly httpClient = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  getProductBySlug(
-    marketCode: string,
-    productSlug: string,
-  ): Observable<ProductDetails> {
-    return this.httpClient.get<ProductDetails>(`/api/products/${productSlug}`, {
-      params: {
-        marketCode,
-      },
-    });
+  getProduct(idOrSlug: string): Observable<ProductDetailsModel> {
+    return this.http.get<ProductDetailsModel>(`/api/products/${idOrSlug}`).pipe(
+      catchError((error: unknown) => {
+        if (error instanceof HttpErrorResponse && error.status === 404) {
+          return throwError(() => new ProductNotFoundError(idOrSlug));
+        }
+        return throwError(() => error);
+      }),
+    );
   }
 }

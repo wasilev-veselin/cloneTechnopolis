@@ -1,10 +1,15 @@
 <table>
   <caption>Спецификации</caption>
   <tbody>
-    @for (spec of specs(); track spec.label) {
+    @for (spec of specs(); track spec.code) {
       <tr>
         <th scope="row">{{ spec.label }}</th>
-        <td>{{ spec.value }}</td>
+        <td>
+          {{ spec.value }}
+          @if (spec.unit) {
+            <span>{{ spec.unit }}</span>
+          }
+        </td>
       </tr>
     }
   </tbody>

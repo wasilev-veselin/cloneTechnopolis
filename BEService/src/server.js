@@ -9,21 +9,6 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-function toProductSummary(product) {
-  return {
-    id: product.id,
-    sku: product.sku,
-    title: product.title,
-    brand: product.brand,
-    categoryCode: product.categoryCode,
-    price: product.price,
-    oldPrice: product.oldPrice,
-    imageUrl: product.imageUrl,
-    availability: product.availability,
-    rating: product.rating,
-  };
-}
-
 function findCategoryByCode(categoryItems, categoryCode) {
   for (const category of categoryItems) {
     if (category.code === categoryCode) {
@@ -69,7 +54,7 @@ app.get('/api/products', (request, response) => {
 
   if (categoryCode) {
     filteredProducts = filteredProducts.filter(
-      (product) => product.categoryCode === categoryCode,
+      (product) => product.categoryIds.includes(categoryCode),
     );
   }
 
@@ -82,21 +67,20 @@ app.get('/api/products', (request, response) => {
   if (sort === 'price-asc') {
     filteredProducts.sort(
       (firstProduct, secondProduct) =>
-        firstProduct.price.amount - secondProduct.price.amount,
+        firstProduct.price.current.amount - secondProduct.price.current.amount,
     );
   }
 
   if (sort === 'price-desc') {
     filteredProducts.sort(
       (firstProduct, secondProduct) =>
-        secondProduct.price.amount - firstProduct.price.amount,
+        secondProduct.price.current.amount - firstProduct.price.current.amount,
     );
   }
 
   if (sort === 'rating-desc') {
-    filteredProducts.sort(
-      (firstProduct, secondProduct) =>
-        secondProduct.rating.average - firstProduct.rating.average,
+    filteredProducts.sort((firstProduct, secondProduct) =>
+      firstProduct.title.localeCompare(secondProduct.title),
     );
   }
 
@@ -104,7 +88,7 @@ app.get('/api/products', (request, response) => {
   const pagedProducts = filteredProducts.slice(startIndex, startIndex + pageSize);
 
   response.json({
-    items: pagedProducts.map(toProductSummary),
+    items: pagedProducts,
     totalCount: filteredProducts.length,
     page,
     pageSize,
@@ -113,7 +97,9 @@ app.get('/api/products', (request, response) => {
 
 app.get('/api/products/:id', (request, response) => {
   const product = products.find(
-    (productItem) => productItem.id === request.params.id,
+    (productItem) =>
+      productItem.id === request.params.id ||
+      productItem.slug === request.params.id,
   );
 
   if (!product) {

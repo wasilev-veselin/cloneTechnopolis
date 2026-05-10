@@ -1,10 +1,10 @@
 <section aria-label="Покупка">
   <div>
     <ts-price-tag
-      [amount]="product().price.amount"
-      [currencyCode]="product().price.currencyCode"
+      [amount]="price().current.amount"
+      [currencyCode]="price().current.currencyCode"
     />
-    <ts-stock-badge [status]="product().stockStatus" />
+    <ts-stock-badge [status]="stockStatus()" />
   </div>
 
   <p>Количество: {{ quantity() }}</p>

@@ -1,5 +1,7 @@
 export interface CatalogQuery {
   marketCode: string;
+  locale: string;
+  currencyCode?: string;
   categorySlug: string | null;
   searchTerm: string | null;
   selectedBrands: string[];

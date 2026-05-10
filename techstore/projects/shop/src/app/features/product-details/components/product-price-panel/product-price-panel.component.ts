@@ -4,7 +4,7 @@ import {
   PriceTagComponent,
   StockBadgeComponent,
 } from '@techstore/design-system';
-import type { ProductDetails } from '../../models/product-details.model';
+import type { ProductPrice, ProductStockStatus } from '../../../../core/models/commerce.model';
 
 @Component({
   selector: 'app-product-price-panel',
@@ -18,7 +18,8 @@ import type { ProductDetails } from '../../models/product-details.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductPricePanelComponent {
-  readonly product = input.required<ProductDetails>();
+  readonly price = input.required<ProductPrice>();
+  readonly stockStatus = input.required<ProductStockStatus>();
   readonly quantity = input.required<number>();
   readonly addToCart = output<void>();
 }

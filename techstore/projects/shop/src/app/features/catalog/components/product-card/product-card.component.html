@@ -1,6 +1,6 @@
 <article>
   <a [routerLink]="['/bg/product', product().slug]" class="image-link">
-    <img [src]="product().imageUrl" [alt]="product().title" loading="lazy" />
+    <img [src]="product().image.url" [alt]="product().image.altText" loading="lazy" />
   </a>
 
   <div class="content">
@@ -13,8 +13,8 @@
 
     <div class="meta">
       <ts-price-tag
-        [amount]="product().price.amount"
-        [currencyCode]="product().price.currencyCode"
+        [amount]="product().price.current.amount"
+        [currencyCode]="product().price.current.currencyCode"
       />
       <ts-stock-badge [status]="product().stockStatus" />
     </div>

@@ -12,11 +12,14 @@ const defaultSort: CatalogSort = 'relevance';
 export class CatalogQueryService {
   createFromParams(
     marketCode: string,
+    locale: string,
     categorySlug: string | null,
     queryParamMap: ParamMap,
   ): CatalogQuery {
     return {
       marketCode,
+      locale,
+      currencyCode: queryParamMap.get('currency') ?? undefined,
       categorySlug,
       searchTerm: queryParamMap.get('q'),
       selectedBrands: this.getListParam(queryParamMap, 'brand'),

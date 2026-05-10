@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
-import type { ProductImage } from '../../models/product-details.model';
+import type { ProductImage } from '../../../../core/models/commerce.model';
 
 @Component({
   selector: 'app-gallery',

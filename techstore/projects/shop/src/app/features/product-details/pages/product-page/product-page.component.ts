@@ -1,43 +1,35 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  linkedSignal,
+  resource,
+} from '@angular/core';
+import { lastValueFrom } from 'rxjs';
+import { CartStore } from '../../../cart/store/cart.store';
 import { GalleryComponent } from '../../components/gallery/gallery.component';
 import { ProductPricePanelComponent } from '../../components/product-price-panel/product-price-panel.component';
 import { RelatedProductsComponent } from '../../components/related-products/related-products.component';
 import { SpecsTableComponent } from '../../components/specs-table/specs-table.component';
 import { VariantSelectorComponent } from '../../components/variant-selector/variant-selector.component';
-import { CartStore } from '../../../cart/store/cart.store';
-import type { ProductDetails } from '../../models/product-details.model';
+import {
+  ProductDetailsApiService,
+  ProductNotFoundError,
+} from '../../data-access/product-details-api.service';
+import type { ProductDetailsModel } from '../../models/product-details.model';
 
-const product: ProductDetails = {
-  id: 'p-100',
-  slug: 'lenovo-thinkpad-x1',
-  title: 'Lenovo ThinkPad X1 Carbon Gen 13',
-  brand: 'Lenovo',
-  description:
-    'Лек бизнес лаптоп с OLED дисплей, дълъг живот на батерията и корпус, подходящ за ежедневно носене.',
-  price: { amount: 3699, currencyCode: 'BGN' },
-  images: [
-    {
-      url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1200&q=80',
-      altText: 'Lenovo ThinkPad лаптоп върху бюро',
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80',
-      altText: 'Лаптоп отворен върху работно място',
-    },
-  ],
-  specs: [
-    { label: 'Процесор', value: 'Intel Core Ultra 7' },
-    { label: 'Памет', value: '32 GB LPDDR5x' },
-    { label: 'Диск', value: '1 TB NVMe SSD' },
-    { label: 'Дисплей', value: '14 inch OLED, 120 Hz' },
-  ],
-  variants: [
-    { id: 'v-1', label: '32GB / 1TB', sku: 'X1-32-1TB', available: true },
-    { id: 'v-2', label: '16GB / 512GB', sku: 'X1-16-512', available: true },
-    { id: 'v-3', label: '64GB / 2TB', sku: 'X1-64-2TB', available: false },
-  ],
-  stockStatus: 'inStock',
-};
+type ProductState =
+  | { status: 'loading' }
+  | { status: 'loaded'; product: ProductDetailsModel }
+  | { status: 'notFound' }
+  | { status: 'error' };
+
+const getDefaultSku = (product: ProductDetailsModel | null): string | null =>
+  product?.variants.find((variant) => variant.isDefault)?.sku ??
+  product?.variants[0]?.sku ??
+  null;
 
 @Component({
   selector: 'app-product-page',
@@ -54,23 +46,61 @@ const product: ProductDetails = {
 })
 export class ProductPageComponent {
   private readonly cartStore = inject(CartStore);
+  private readonly productDetailsApiService = inject(ProductDetailsApiService);
 
-  protected readonly product = signal(product);
-  protected readonly quantity = signal(1);
-  protected readonly selectedSku = signal(product.variants[0]?.sku ?? null);
+  readonly marketCode = input.required<string>();
+  readonly productSlug = input.required<string>();
+
+  private readonly productResource = resource<ProductDetailsModel, string>({
+    params: () => this.productSlug(),
+    loader: ({ params }) => lastValueFrom(this.productDetailsApiService.getProduct(params)),
+  });
+
+  protected readonly productState = computed((): ProductState => {
+    const status = this.productResource.status();
+
+    if (status === 'loading' || status === 'idle') return { status: 'loading' };
+    if (status === 'error') {
+      return {
+        status: this.productResource.error() instanceof ProductNotFoundError ? 'notFound' : 'error',
+      };
+    }
+
+    return { status: 'loaded', product: this.productResource.value()! };
+  });
+
+  protected readonly product = computed(() => {
+    const state = this.productState();
+
+    return state.status === 'loaded' ? state.product : null;
+  });
+
+  protected readonly quantity = linkedSignal({
+    source: () => this.product()?.id,
+    computation: () => 1,
+  });
+  protected readonly selectedSku = linkedSignal(() => getDefaultSku(this.product()));
   protected readonly selectedVariant = computed(() =>
-    this.product().variants.find((variant) => variant.sku === this.selectedSku()),
+    this.product()?.variants.find((variant) => variant.sku === this.selectedSku()),
+  );
+  protected readonly selectedPrice = computed(
+    () => this.selectedVariant()?.price ?? this.product()?.price ?? null,
   );
 
   protected addToCart(): void {
     const currentProduct = this.product();
+    const currentPrice = this.selectedPrice();
+
+    if (!currentProduct || !currentPrice) {
+      return;
+    }
 
     this.cartStore.addItem({
       productId: currentProduct.id,
-      sku: this.selectedVariant()?.sku ?? currentProduct.slug,
+      sku: this.selectedSku() ?? '',
       title: currentProduct.title,
       brand: currentProduct.brand,
-      unitPrice: currentProduct.price,
+      unitPrice: currentPrice.current,
       quantity: this.quantity(),
       imageUrl: currentProduct.images[0]?.url,
     });
