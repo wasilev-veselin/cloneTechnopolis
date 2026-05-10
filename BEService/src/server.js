@@ -45,7 +45,10 @@ app.get('/api/categories/:categoryCode', (request, response) => {
 
 app.get('/api/products', (request, response) => {
   const categoryCode = request.query.categoryCode;
-  const brand = request.query.brand;
+  const brands = String(request.query.brand ?? '')
+    .split(',')
+    .map((brand) => brand.trim().toLowerCase())
+    .filter(Boolean);
   const sort = request.query.sort;
   const page = Number(request.query.page ?? 1);
   const pageSize = Number(request.query.pageSize ?? 20);
@@ -58,9 +61,9 @@ app.get('/api/products', (request, response) => {
     );
   }
 
-  if (brand) {
+  if (brands.length > 0) {
     filteredProducts = filteredProducts.filter(
-      (product) => product.brand.toLowerCase() === String(brand).toLowerCase(),
+      (product) => brands.includes(product.brand.toLowerCase()),
     );
   }
 

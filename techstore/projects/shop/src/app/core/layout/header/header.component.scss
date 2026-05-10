@@ -42,6 +42,7 @@ nav {
   display: flex;
   gap: 1rem;
   justify-content: center;
+  align-items: center;
 }
 
 nav a,
@@ -55,6 +56,50 @@ nav a.active,
 nav a:hover,
 .cart-link:hover {
   background: #e6f3f1;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  min-width: min(24rem, 100%);
+  border: 1px solid #b8d1cc;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.search-form:focus-within {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgb(15 118 110 / 16%);
+}
+
+.search-form input {
+  width: 100%;
+  min-width: 8rem;
+  border: 0;
+  padding: 0.625rem 0.75rem;
+  background: transparent;
+  color: #0f172a;
+  font: inherit;
+}
+
+.search-form input:focus {
+  outline: 0;
+}
+
+.search-form button {
+  border: 0;
+  border-left: 1px solid #d7e2df;
+  padding: 0.625rem 0.875rem;
+  background: #0f766e;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search-form button:hover {
+  background: #115e59;
 }
 
 .cart-link {
@@ -84,5 +129,10 @@ nav a:hover,
   nav {
     justify-content: flex-start;
     overflow-x: auto;
+  }
+
+  .search-form {
+    flex: 1 0 14rem;
+    min-width: 14rem;
   }
 }

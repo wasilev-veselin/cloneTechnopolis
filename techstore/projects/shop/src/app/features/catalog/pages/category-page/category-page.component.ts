@@ -1,107 +1,89 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  numberAttribute,
+} from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FilterPanelComponent } from '../../components/filter-panel/filter-panel.component';
 import { PaginationComponent } from '../../components/pagination/pagination.component';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
-import type { ProductSummary } from '../../models/product-summary.model';
-
-const products: ProductSummary[] = [
-  {
-    id: 'p-100',
-    masterProductId: 'mp-100',
-    marketCode: 'bg',
-    locale: 'bg-BG',
-    slug: 'lenovo-thinkpad',
-    title: 'Lenovo ThinkPad X1 Carbon Gen',
-    brand: 'Lenovo',
-    categoryIds: ['laptops', 'business-laptops'],
-    price: {
-      current: { amount: 3699, currencyCode: 'BGN' },
-      includesTax: true,
-      taxRate: 20,
-    },
-    image: {
-      url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80',
-      altText: 'Lenovo ThinkPad X1 Carbon Gen 13',
-      role: 'primary',
-    },
-    availability: {
-      status: 'inStock',
-      storesAvailableCount: 12,
-    },
-    stockStatus: 'inStock',
-    badges: [{ code: 'business-choice', label: 'Business choice', tone: 'success' }],
-  },
-  {
-    id: 'p-101',
-    masterProductId: 'mp-101',
-    marketCode: 'bg',
-    locale: 'bg-BG',
-    slug: 'sony-wh-1000xm6',
-    title: 'Sony WH-1000XM6 Noise Canceling Headphones',
-    brand: 'Sony',
-    categoryIds: ['audio', 'headphones'],
-    price: {
-      current: { amount: 829, currencyCode: 'BGN' },
-      original: { amount: 899, currencyCode: 'BGN' },
-      discountPercent: 8,
-      includesTax: true,
-      taxRate: 20,
-    },
-    image: {
-      url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80',
-      altText: 'Sony WH-1000XM6 Noise Canceling Headphones',
-      role: 'primary',
-    },
-    availability: {
-      status: 'limited',
-      quantity: 4,
-    },
-    stockStatus: 'limited',
-    badges: [{ code: 'promo', label: 'Promo', tone: 'warning' }],
-  },
-  {
-    id: 'p-102',
-    masterProductId: 'mp-102',
-    marketCode: 'bg',
-    locale: 'bg-BG',
-    slug: 'samsung-odyssey-oled',
-    title: 'Samsung Odyssey OLED 32 Gaming Monitor',
-    brand: 'Samsung',
-    categoryIds: ['monitors', 'gaming-monitors'],
-    price: {
-      current: { amount: 2199, currencyCode: 'BGN' },
-      includesTax: true,
-      taxRate: 20,
-    },
-    image: {
-      url: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=900&q=80',
-      altText: 'Samsung Odyssey OLED 32 Gaming Monitor',
-      role: 'primary',
-    },
-    availability: {
-      status: 'onlineOnly',
-      estimatedDeliveryDate: '2026-05-14',
-    },
-    stockStatus: 'inStock',
-    badges: [{ code: 'online-only', label: 'Online only', tone: 'neutral' }],
-  },
-];
+import { CatalogApiService } from '../../data-access/catalog-api.service';
+import { CatalogQueryService } from '../../data-access/catalog-query.service';
 
 @Component({
   selector: 'app-catalog-page',
-  imports: [
-    FilterPanelComponent,
-    PaginationComponent,
-    ProductCardComponent,
-  ],
+  imports: [FilterPanelComponent, PaginationComponent, ProductCardComponent],
   templateUrl: './category-page.component.html',
   styleUrl: './category-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class CatalogPageComponent {
-  protected readonly products = signal(products);
-  protected readonly brands = computed(() => [
-    ...new Set(this.products().map((product) => product.brand)),
-  ]);
+  private readonly catalogApi = inject(CatalogApiService);
+  private readonly catalogQueryService = inject(CatalogQueryService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  // Route params — resolved via withComponentInputBinding() + paramsInheritanceStrategy: 'always'
+  readonly marketCode = input<string>('bg');
+  readonly categorySlug = input<string | null>(null);
+
+  // Query params
+  readonly page = input(1, { transform: numberAttribute });
+  readonly pageSize = input(24, { transform: numberAttribute });
+  readonly sort = input<string | null>(null);
+  readonly brand = input<string | null>(null);
+
+  protected readonly catalogQuery = computed(() =>
+    this.catalogQueryService.createFromInputs({
+      marketCode: this.marketCode(),
+      categorySlug: this.categorySlug(),
+      sort: this.sort(),
+      brand: this.brand(),
+      page: this.page(),
+      pageSize: this.pageSize(),
+    }),
+  );
+
+  protected readonly catalogResource = rxResource({
+    params: () => this.catalogQuery(),
+    stream: ({ params }) => this.catalogApi.getProducts(params),
+    defaultValue: {
+      products: [],
+      totalCount: 0,
+      page: 1,
+      pageSize: 24,
+    },
+  });
+
+  protected readonly products = computed(() => this.catalogResource.value().products);
+  protected readonly selectedBrands = computed(() => this.catalogQuery().selectedBrands);
+  protected readonly brands = computed(() => {
+    return [
+      ...new Set([
+        ...this.products().map((product) => product.brand),
+        ...this.selectedBrands(),
+      ]),
+    ];
+  });
+
+  protected readonly totalPages = computed(() => {
+    const response = this.catalogResource.value();
+
+    return Math.max(1, Math.ceil(response.totalCount / response.pageSize));
+  });
+
+  protected setBrands(brands: readonly string[]): void {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        brand: brands.length > 0 ? brands.join(',') : null,
+        page: 1,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
 }

@@ -1,69 +1,59 @@
 import { Injectable } from '@angular/core';
-import type { ParamMap } from '@angular/router';
 import type { CatalogQuery, CatalogSort } from '../models/catalog-query.model';
 
-const defaultPage = 1;
-const defaultPageSize = 24;
-const defaultSort: CatalogSort = 'relevance';
+const ALL_CATEGORIES_SLUG = 'all';
+const DEFAULT_PAGE = 1;
+const DEFAULT_PAGE_SIZE = 24;
+
+const LOCALE_BY_MARKET: Record<string, string> = {
+  bg: 'bg-BG',
+  en: 'en-US',
+};
+
+export interface CatalogQueryInputs {
+  marketCode: string;
+  categorySlug: string | null | undefined;
+  sort: string | null | undefined;
+  brand: string | null | undefined;
+  page: number;
+  pageSize: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class CatalogQueryService {
-  createFromParams(
-    marketCode: string,
-    locale: string,
-    categorySlug: string | null,
-    queryParamMap: ParamMap,
-  ): CatalogQuery {
+  createFromInputs({
+    marketCode,
+    categorySlug,
+    sort,
+    brand,
+    page,
+    pageSize,
+  }: CatalogQueryInputs): CatalogQuery {
     return {
       marketCode,
-      locale,
-      currencyCode: queryParamMap.get('currency') ?? undefined,
-      categorySlug,
-      searchTerm: queryParamMap.get('q'),
-      selectedBrands: this.getListParam(queryParamMap, 'brand'),
-      sort: this.getSort(queryParamMap),
-      page: this.getNumberParam(queryParamMap, 'page', defaultPage),
-      pageSize: this.getNumberParam(queryParamMap, 'pageSize', defaultPageSize),
+      locale: LOCALE_BY_MARKET[marketCode] ?? 'en-US',
+      categoryCode: categorySlug === ALL_CATEGORIES_SLUG ? null : (categorySlug ?? null),
+      searchTerm: null,
+      selectedBrands: brand
+        ? brand
+            .split(',')
+            .map((b) => b.trim())
+            .filter(Boolean)
+        : [],
+      specFilters: [],
+      sort: this.validateSort(sort),
+      page: Number.isFinite(page) && page > 0 ? page : DEFAULT_PAGE,
+      pageSize: Number.isFinite(pageSize) && pageSize > 0 ? pageSize : DEFAULT_PAGE_SIZE,
     };
   }
 
-  private getListParam(queryParamMap: ParamMap, key: string): string[] {
-    const value = queryParamMap.get(key);
-
-    if (!value) {
-      return [];
-    }
-
-    return value
-      .split(',')
-      .map((item) => item.trim())
-      .filter(Boolean);
-  }
-
-  private getSort(queryParamMap: ParamMap): CatalogSort {
-    const value = queryParamMap.get('sort');
-
-    if (
-      value === 'price-asc' ||
-      value === 'price-desc' ||
-      value === 'name-asc' ||
-      value === 'name-desc'
-    ) {
+  private validateSort(value: string | null | undefined): CatalogSort | undefined {
+    if (value === 'price-asc' || value === 'price-desc' || value === 'rating-desc') {
       return value;
     }
 
-    return defaultSort;
-  }
-
-  private getNumberParam(
-    queryParamMap: ParamMap,
-    key: string,
-    fallbackValue: number,
-  ): number {
-    const value = Number(queryParamMap.get(key));
-
-    return Number.isFinite(value) && value > 0 ? value : fallbackValue;
+    return undefined;
   }
 }

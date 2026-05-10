@@ -1,31 +1,50 @@
-<section class="hero">
+<section class="head">
   <div>
     <p class="eyebrow">Techstore каталог</p>
     <h2>Техника за работа, gaming и ежедневна употреба</h2>
-    <p>Начален shop изглед с навигация, филтри, сортиране и продуктови карти</p>
-
+    <p>Начален shop изглед с навигация, филтри и продуктови карти</p>
   </div>
 </section>
 
 <section class="catalog">
   <div class="filters">
-    <app-filter-panel [brands]="brands()" />
+    <app-filter-panel
+      [brands]="brands()"
+      [selectedBrands]="selectedBrands()"
+      (brandsApplied)="setBrands($event)"
+    />
   </div>
 
   <div class="results">
     <div class="results-header">
       <div>
         <h2>Популярни продукти</h2>
-        <p>{{ products().length }} продукта</p>
+        @if (!catalogResource.isLoading()) {
+          <p>{{ catalogResource.value().totalCount }} продукта</p>
+        }
       </div>
     </div>
 
-    <div class="grid">
-      @for (product of products(); track product.id) {
-        <app-product-card [product]="product" />
+    <div aria-live="polite" aria-atomic="true">
+      @if (catalogResource.isLoading()) {
+        <p>Зареждане...</p>
+      } @else if (catalogResource.error()) {
+        <p>Продуктите не могат да бъдат заредени.</p>
+      } @else if (products().length === 0) {
+        <p>Няма намерени продукти.</p>
       }
     </div>
 
-    <app-pagination [page]="1" [totalPages]="1" />
+    @if (!catalogResource.isLoading() && !catalogResource.error() && products().length > 0) {
+      <div class="grid">
+        @for (product of products(); track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+    }
+
+    @if (!catalogResource.isLoading() && !catalogResource.error()) {
+      <app-pagination [page]="catalogResource.value().page" [totalPages]="totalPages()" />
+    }
   </div>
 </section>

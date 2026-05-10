@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { BadgeComponent, type BadgeTone } from '../../primitives/badge/badge.component';
 
-export type StockStatus = 'inStock' | 'limited' | 'outOfStock';
+export type StockStatus = 'inStock' | 'limited' | 'outOfStock' | 'preorder' | 'onlineOnly';
 
 @Component({
   selector: 'ts-stock-badge',
@@ -17,6 +17,8 @@ export class StockBadgeComponent {
       inStock: 'В наличност',
       limited: 'Ограничено',
       outOfStock: 'Изчерпан',
+      preorder: 'Предварителна поръчка',
+      onlineOnly: 'Само онлайн',
     };
 
     return labels[this.status()];
@@ -27,6 +29,8 @@ export class StockBadgeComponent {
       inStock: 'success',
       limited: 'warning',
       outOfStock: 'danger',
+      preorder: 'warning',
+      onlineOnly: 'neutral',
     };
 
     return tones[this.status()];

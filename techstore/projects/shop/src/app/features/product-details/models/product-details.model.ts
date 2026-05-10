@@ -1,9 +1,9 @@
+import type { CategorySpecs } from '../../../core/models/category-specs.model';
 import type {
   ProductAvailability,
   ProductBadge,
   ProductImage,
   ProductPrice,
-  ProductStockStatus,
   SeoMetadata,
 } from '../../../core/models/commerce.model';
 
@@ -22,22 +22,27 @@ export interface ProductDetailsModel {
   badges?: ProductBadge[];
   images: ProductImage[];
   specs: ProductSpec[];
+  categorySpecs?: CategorySpecs;
   variants: ProductVariant[];
   price: ProductPrice;
   availability: ProductAvailability;
-  stockStatus: ProductStockStatus;
 }
 
-export interface ProductSpec {
+interface ProductProperty {
   code: string;
   label: string;
   value: string;
   unit?: string;
+}
+
+export interface ProductSpec extends ProductProperty {
   groupCode?: string;
   groupLabel?: string;
   comparable?: boolean;
   filterable?: boolean;
 }
+
+export type ProductAttribute = ProductProperty;
 
 export interface ProductVariant {
   id: string;
@@ -48,11 +53,4 @@ export interface ProductVariant {
   availability: ProductAvailability;
   images?: ProductImage[];
   isDefault: boolean;
-}
-
-export interface ProductAttribute {
-  code: string;
-  label: string;
-  value: string;
-  unit?: string;
 }

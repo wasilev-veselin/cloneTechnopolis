@@ -24,6 +24,7 @@
     "@angular/ssr": "^21.2.10",
     "@ngrx/signals": "^21.1.0",
     "express": "^5.1.0",
+    "http-proxy-middleware": "^4.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zod": "^4.4.3"

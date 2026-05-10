@@ -1,3 +1,5 @@
+export const DEFAULT_CURRENCY_CODE = 'EUR';
+
 export interface Money {
   amount: number;
   currencyCode: string;
@@ -25,8 +27,6 @@ export type ProductAvailabilityStatus =
   | 'outOfStock'
   | 'preorder'
   | 'onlineOnly';
-
-export type ProductStockStatus = 'inStock' | 'limited' | 'outOfStock';
 
 export interface ProductImage {
   url: string;

@@ -16,7 +16,7 @@
         [amount]="product().price.current.amount"
         [currencyCode]="product().price.current.currencyCode"
       />
-      <ts-stock-badge [status]="product().stockStatus" />
+      <ts-stock-badge [status]="product().availability.status" />
     </div>
   </div>
 </article>

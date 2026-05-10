@@ -116,7 +116,7 @@ Query parameters:
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
 | `categoryCode` | No | - | Filters products where `categoryIds` contains the value. |
-| `brand` | No | - | Filters by exact brand, case-insensitive. |
+| `brand` | No | - | Filters by exact brand, case-insensitive. Multiple brands can be provided as a comma-separated list. |
 | `sort` | No | - | Supported values: `price-asc`, `price-desc`, `rating-desc`. Current `rating-desc` falls back to title ordering because mock products do not contain rating data. |
 | `page` | No | `1` | Page number. |
 | `pageSize` | No | `20` | Number of products per page. |
@@ -124,7 +124,7 @@ Query parameters:
 Example:
 
 ```bash
-curl "http://localhost:3000/api/products?categoryCode=laptops&brand=Lenovo&sort=price-asc&page=1&pageSize=10"
+curl "http://localhost:3000/api/products?categoryCode=laptops&brand=Lenovo,Sony&sort=price-asc&page=1&pageSize=10"
 ```
 
 Response:
@@ -144,7 +144,7 @@ Response:
       "price": {
         "current": {
           "amount": 3699,
-          "currencyCode": "BGN"
+          "currencyCode": "EUR"
         },
         "includesTax": true,
         "taxRate": 20
@@ -206,7 +206,7 @@ Success response:
   "price": {
     "current": {
       "amount": 3699,
-      "currencyCode": "BGN"
+      "currencyCode": "EUR"
     },
     "includesTax": true,
     "taxRate": 20

@@ -1,6 +1,12 @@
 <section>
-  <h1>Поръчката е приета</h1>
-  <p>Демо confirmation екран, готов за реален checkout submit flow.</p>
+  @if (confirmation(); as order) {
+    <h1>Поръчката е приета!</h1>
+    <p>Номер на поръчка: <strong>{{ order.orderNumber }}</strong></p>
+    <p class="order-id">ID: {{ order.orderId }}</p>
+  } @else {
+    <h1>Поръчката е приета!</h1>
+    <p>Благодарим за поръчката.</p>
+  }
   <a routerLink="/bg/catalog/all">
     <ts-button>Към каталога</ts-button>
   </a>

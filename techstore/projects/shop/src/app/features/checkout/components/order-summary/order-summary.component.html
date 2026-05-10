@@ -6,9 +6,11 @@
   </div>
   <div>
     <span>Сума</span>
-    <ts-price-tag
-      [amount]="cartStore.subtotal().amount"
-      [currencyCode]="cartStore.subtotal().currencyCode"
-    />
+    @if (cartStore.subtotal(); as subtotal) {
+      <ts-price-tag
+        [amount]="subtotal.amount"
+        [currencyCode]="subtotal.currencyCode"
+      />
+    }
   </div>
 </aside>

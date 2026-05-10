@@ -53,7 +53,7 @@ export const products = [
     },
     badges: [{ code: 'business-choice', label: 'Business choice', tone: 'success' }],
     price: {
-      current: { amount: 3699, currencyCode: 'BGN' },
+      current: { amount: 1891.27, currencyCode: 'EUR' },
       includesTax: true,
       taxRate: 20,
     },
@@ -134,7 +134,7 @@ export const products = [
           { code: 'storage', label: 'Storage', value: '512', unit: 'GB' },
         ],
         price: {
-          current: { amount: 3299, currencyCode: 'BGN' },
+          current: { amount: 1686.75, currencyCode: 'EUR' },
           includesTax: true,
           taxRate: 20,
         },
@@ -153,7 +153,6 @@ export const products = [
         isDefault: false,
       },
     ],
-    stockStatus: 'inStock',
   },
   {
     id: '101',
@@ -173,8 +172,8 @@ export const products = [
     },
     badges: [{ code: 'promo', label: 'Promo', tone: 'warning' }],
     price: {
-      current: { amount: 829, currencyCode: 'BGN' },
-      original: { amount: 899, currencyCode: 'BGN' },
+      current: { amount: 423.86, currencyCode: 'EUR' },
+      original: { amount: 459.65, currencyCode: 'EUR' },
       discountPercent: 8,
       includesTax: true,
       taxRate: 20,
@@ -243,7 +242,6 @@ export const products = [
         isDefault: false,
       },
     ],
-    stockStatus: 'limited',
   },
   {
     id: '102',
@@ -263,7 +261,7 @@ export const products = [
     },
     badges: [{ code: 'online-only', label: 'Online only', tone: 'neutral' }],
     price: {
-      current: { amount: 2199, currencyCode: 'BGN' },
+      current: { amount: 1124.32, currencyCode: 'EUR' },
       includesTax: true,
       taxRate: 20,
     },
@@ -330,6 +328,5 @@ export const products = [
         isDefault: true,
       },
     ],
-    stockStatus: 'inStock',
   },
 ];

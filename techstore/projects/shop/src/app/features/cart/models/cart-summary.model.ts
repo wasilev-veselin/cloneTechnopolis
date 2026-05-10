@@ -1,7 +1,6 @@
+import type { Money } from '../../../core/models/commerce.model';
+
 export interface CartSummary {
   totalQuantity: number;
-  subtotal: {
-    amount: number;
-    currencyCode: string;
-  };
+  subtotal: Money | null;
 }

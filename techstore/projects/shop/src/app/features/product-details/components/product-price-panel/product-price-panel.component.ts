@@ -4,7 +4,7 @@ import {
   PriceTagComponent,
   StockBadgeComponent,
 } from '@techstore/design-system';
-import type { ProductPrice, ProductStockStatus } from '../../../../core/models/commerce.model';
+import type { ProductAvailabilityStatus, ProductPrice } from '../../../../core/models/commerce.model';
 
 @Component({
   selector: 'app-product-price-panel',
@@ -19,7 +19,8 @@ import type { ProductPrice, ProductStockStatus } from '../../../../core/models/c
 })
 export class ProductPricePanelComponent {
   readonly price = input.required<ProductPrice>();
-  readonly stockStatus = input.required<ProductStockStatus>();
-  readonly quantity = input.required<number>();
+  readonly availabilityStatus = input.required<ProductAvailabilityStatus>();
+  readonly quantity = input.required<number | null>();
+  readonly canAddToCart = input.required<boolean>();
   readonly addToCart = output<void>();
 }

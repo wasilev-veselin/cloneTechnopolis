@@ -3,7 +3,6 @@ import type {
   ProductBadge,
   ProductImage,
   ProductPrice,
-  ProductStockStatus,
   SeoMetadata,
 } from '../../../core/models/commerce.model';
 
@@ -19,7 +18,6 @@ export interface ProductSummary {
   price: ProductPrice;
   image: ProductImage;
   availability: ProductAvailability;
-  stockStatus: ProductStockStatus;
   badges?: ProductBadge[];
   seo?: SeoMetadata;
 }

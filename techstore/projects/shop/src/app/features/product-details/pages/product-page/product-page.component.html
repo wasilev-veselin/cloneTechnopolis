@@ -1,11 +1,29 @@
-@switch (productState().status) {
+@switch (productResource.status()) {
+  @case ('idle') {
+    <section class="product-state" aria-live="polite">
+      <h1>Зареждане на продукта</h1>
+    </section>
+  }
+
   @case ('loading') {
     <section class="product-state" aria-live="polite">
       <h1>Зареждане на продукта</h1>
     </section>
   }
 
-  @case ('loaded') {
+  @case ('error') {
+    <section class="product-state" aria-live="polite">
+      @if (isProductNotFound()) {
+        <h1>Продуктът не е намерен</h1>
+        <p>Няма продукт: {{ productSlug() }}</p>
+      } @else {
+        <h1>Неуспешно зареждане на продукта</h1>
+        <p>Опитайте отново по-късно.</p>
+      }
+    </section>
+  }
+
+  @default {
     @if (product(); as product) {
       <article class="product-page">
         <app-gallery [images]="product.images" />
@@ -23,8 +41,9 @@
           @if (selectedPrice(); as price) {
             <app-product-price-panel
               [price]="price"
-              [stockStatus]="product.stockStatus"
+              [availabilityStatus]="availabilityStatus()"
               [quantity]="quantity()"
+              [canAddToCart]="canAddToCart()"
               (addToCart)="addToCart()"
             />
           }
@@ -36,19 +55,5 @@
         </section>
       </article>
     }
-  }
-
-  @case ('notFound') {
-    <section class="product-state" aria-live="polite">
-      <h1>Продуктът не е намерен</h1>
-      <p>Няма продукт за адрес: {{ productSlug() }}</p>
-    </section>
-  }
-
-  @case ('error') {
-    <section class="product-state" aria-live="polite">
-      <h1>Неуспешно зареждане на продукта</h1>
-      <p>Опитайте отново по-късно.</p>
-    </section>
   }
 }

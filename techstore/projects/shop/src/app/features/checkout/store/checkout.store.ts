@@ -1,59 +1,102 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject } from '@angular/core';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { EMPTY, catchError, exhaustMap, pipe, tap } from 'rxjs';
+import type { CartItem } from '../../cart/models/cart-item.model';
+import { CartStore } from '../../cart/store/cart.store';
+import { CheckoutApiService } from '../data-access/checkout-api.service';
 import type { CheckoutStep } from '../models/checkout-step.model';
 import type { DeliveryAddress } from '../models/delivery-address.model';
 import type { OrderConfirmation } from '../models/order-confirmation.model';
 import type { PaymentMethod } from '../models/payment-method.model';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class CheckoutStore {
-  readonly currentStep = signal<CheckoutStep>('shipping');
-  readonly deliveryAddress = signal<DeliveryAddress | null>(null);
-  readonly paymentMethod = signal<PaymentMethod | null>(null);
-  readonly orderConfirmation = signal<OrderConfirmation | null>(null);
+type CheckoutState = {
+  currentStep: CheckoutStep;
+  deliveryAddress: DeliveryAddress | null;
+  paymentMethod: PaymentMethod | null;
+  orderConfirmation: OrderConfirmation | null;
+  submitting: boolean;
+  errorMessage: string | null;
+};
 
-  readonly submitting = signal(false);
-  readonly errorMessage = signal<string | null>(null);
+const initialState: CheckoutState = {
+  currentStep: 'shipping',
+  deliveryAddress: null,
+  paymentMethod: null,
+  orderConfirmation: null,
+  submitting: false,
+  errorMessage: null,
+};
 
-  readonly canContinueToPayment = computed(
-    () => this.deliveryAddress() !== null,
-  );
+export const CheckoutStore = signalStore(
+  { providedIn: 'root' },
+  withState(initialState),
+  withComputed(({ deliveryAddress, paymentMethod }) => ({
+    canContinueToPayment: computed(() => deliveryAddress() !== null),
+    canSubmitOrder: computed(() => deliveryAddress() !== null && paymentMethod() !== null),
+  })),
+  withMethods((store) => {
+    const checkoutApi = inject(CheckoutApiService);
+    const cartStore = inject(CartStore);
 
-  readonly canSubmitOrder = computed(
-    () => this.deliveryAddress() !== null && this.paymentMethod() !== null,
-  );
+    return {
+      /** Задава активната стъпка на checkout flow-а. @param step – 'shipping' | 'payment' | 'confirmation' */
+      setCurrentStep(step: CheckoutStep): void {
+        patchState(store, { currentStep: step });
+      },
 
-  setCurrentStep(step: CheckoutStep): void {
-    this.currentStep.set(step);
-  }
+      /** Записва адреса за доставка след валидиране на формата. @param address – попълнен DeliveryAddress обект */
+      setDeliveryAddress(address: DeliveryAddress): void {
+        patchState(store, { deliveryAddress: address });
+      },
 
-  setDeliveryAddress(deliveryAddress: DeliveryAddress): void {
-    this.deliveryAddress.set(deliveryAddress);
-  }
+      /** Записва избрания начин на плащане. @param method – избран PaymentMethod от потребителя */
+      setPaymentMethod(method: PaymentMethod): void {
+        patchState(store, { paymentMethod: method });
+      },
 
-  setPaymentMethod(paymentMethod: PaymentMethod): void {
-    this.paymentMethod.set(paymentMethod);
-  }
+      /**
+       * Изпраща поръчката към API-то. exhaustMap игнорира повторни извиквания докато заявката тече.
+       * Чете deliveryAddress и paymentMethod директно от store-а; връща EMPTY ако липсват.
+       * @param cartItems – артикули от CartStore, подадени от компонента
+       */
+      submitOrder: rxMethod<CartItem[]>(
+        pipe(
+          exhaustMap((cartItems) => {
+            const deliveryAddress = store.deliveryAddress();
+            const paymentMethod = store.paymentMethod();
 
-  setSubmitting(submitting: boolean): void {
-    this.submitting.set(submitting);
-  }
+            if (!deliveryAddress || !paymentMethod) {
+              return EMPTY;
+            }
 
-  setErrorMessage(errorMessage: string | null): void {
-    this.errorMessage.set(errorMessage);
-  }
+            patchState(store, { submitting: true, errorMessage: null });
 
-  setOrderConfirmation(orderConfirmation: OrderConfirmation): void {
-    this.orderConfirmation.set(orderConfirmation);
-  }
+            return checkoutApi.submitOrder({ cartItems, deliveryAddress, paymentMethod }).pipe(
+              tap((confirmation) => {
+                cartStore.clear();
+                patchState(store, {
+                  orderConfirmation: confirmation,
+                  currentStep: 'confirmation',
+                  submitting: false,
+                });
+              }),
+              catchError((err: unknown) => {
+                patchState(store, {
+                  errorMessage: err instanceof Error ? err.message : 'Грешка при изпращане на поръчката',
+                  submitting: false,
+                });
+                return EMPTY;
+              }),
+            );
+          }),
+        ),
+      ),
 
-  reset(): void {
-    this.currentStep.set('shipping');
-    this.deliveryAddress.set(null);
-    this.paymentMethod.set(null);
-    this.orderConfirmation.set(null);
-    this.submitting.set(false);
-    this.errorMessage.set(null);
-  }
-}
+      /** Нулира целия checkout state до начални стойности (след успешна поръчка или изход). */
+      reset(): void {
+        patchState(store, initialState);
+      },
+    };
+  }),
+);

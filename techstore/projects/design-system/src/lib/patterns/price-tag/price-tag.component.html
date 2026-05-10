@@ -1,1 +1,2 @@
-<span>{{ amount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span>
+<span class="price-tag__currency">{{ currencySymbol() }}</span>
+<span class="price-tag__amount">{{ amount() | number: '1.2-2' }}</span>

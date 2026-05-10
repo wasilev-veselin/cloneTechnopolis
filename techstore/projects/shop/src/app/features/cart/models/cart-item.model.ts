@@ -9,3 +9,5 @@ export interface CartItem {
   quantity: number;
   imageUrl?: string;
 }
+
+export type CartItemInput = Omit<CartItem, 'quantity'> & { quantity?: number };

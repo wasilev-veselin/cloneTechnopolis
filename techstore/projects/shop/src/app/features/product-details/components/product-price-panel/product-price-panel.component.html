@@ -4,10 +4,19 @@
       [amount]="price().current.amount"
       [currencyCode]="price().current.currencyCode"
     />
-    <ts-stock-badge [status]="stockStatus()" />
+    <ts-stock-badge [status]="availabilityStatus()" />
   </div>
 
-  <p>Количество: {{ quantity() }}</p>
+  <p>
+    Наличност:
+    @if (quantity() === null) {
+      не е посочено
+    } @else {
+      {{ quantity() }}
+    }
+  </p>
 
-  <ts-button (click)="addToCart.emit()">Добави в количката</ts-button>
+  <ts-button [disabled]="!canAddToCart()" (click)="addToCart.emit()">
+    Добави в количката
+  </ts-button>
 </section>

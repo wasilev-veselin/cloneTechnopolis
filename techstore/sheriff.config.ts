@@ -1,10 +1,9 @@
-import { noDependencies, sameTag } from '@softarc/sheriff-core';
+import { sameTag } from '@softarc/sheriff-core';
 import type { SheriffConfig } from '@softarc/sheriff-core';
 
 export const config: SheriffConfig = {
   tagging: {
     'projects/design-system/src/lib/**/*.ts': ['type:design-system'],
-    'projects/shared-util/src/lib/**/*.ts': ['type:shared-util'],
 
     'projects/shop/src/app/core/**/*.ts': ['app:shop', 'type:core'],
     'projects/shop/src/app/features/catalog/**/*.ts': [
@@ -27,9 +26,7 @@ export const config: SheriffConfig = {
     'projects/admin/src/app/**/*.ts': ['app:admin'],
   },
   depRules: {
-    'type:shared-util': noDependencies,
-    'type:design-system': ['type:shared-util'],
-    'app:shop': [sameTag, 'type:design-system', 'type:shared-util'],
-    'app:admin': [sameTag, 'type:design-system', 'type:shared-util'],
+    'app:shop': [sameTag, 'type:design-system'],
+    'app:admin': [sameTag, 'type:design-system'],
   },
 };

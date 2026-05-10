@@ -6,7 +6,16 @@
 
   <nav aria-label="Основна навигация">
     <a routerLink="/bg/catalog/all" routerLinkActive="active">Каталог</a>
-    <a routerLink="/bg/search" routerLinkActive="active">Търсене</a>
+    <form class="search-form" role="search" (submit)="search($event, searchInput.value)">
+      <input
+        #searchInput
+        type="search"
+        name="q"
+        placeholder="Търсене"
+        aria-label="Търсене"
+      />
+      <button type="submit">Търси</button>
+    </form>
   </nav>
 
   <a class="cart-link" routerLink="/bg/cart" aria-label="Количка">

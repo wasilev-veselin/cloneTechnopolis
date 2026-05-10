@@ -4,9 +4,21 @@
     <legend>Марка</legend>
     @for (brand of brands(); track brand) {
       <label>
-        <input type="checkbox" [value]="brand" />
+        <input
+          type="checkbox"
+          [value]="brand"
+          [checked]="pendingBrands().has(brand)"
+          (change)="toggleBrand(brand)"
+        />
         {{ brand }}
       </label>
     }
   </fieldset>
+
+  <div class="filter-actions">
+    <button type="button" (click)="applyFilters()">Apply</button>
+    <button type="button" [disabled]="!hasPendingSelection()" (click)="clearFilters()">
+      Изчисти
+    </button>
+  </div>
 </aside>

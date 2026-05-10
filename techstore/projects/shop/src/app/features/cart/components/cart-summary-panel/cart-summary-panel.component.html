@@ -6,10 +6,12 @@
   </div>
   <div>
     <span>Междинна сума</span>
-    <ts-price-tag
-      [amount]="summary().subtotal.amount"
-      [currencyCode]="summary().subtotal.currencyCode"
-    />
+    @if (summary().subtotal; as subtotal) {
+      <ts-price-tag
+        [amount]="subtotal.amount"
+        [currencyCode]="subtotal.currencyCode"
+      />
+    }
   </div>
   <a routerLink="/bg/checkout/shipping">
     <ts-button>Към поръчка</ts-button>

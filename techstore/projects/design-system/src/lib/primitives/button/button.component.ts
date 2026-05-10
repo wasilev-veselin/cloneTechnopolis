@@ -17,4 +17,5 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 export class ButtonComponent {
   readonly variant = input<ButtonVariant>('primary');
   readonly type = input<'button' | 'submit' | 'reset'>('button');
+  readonly disabled = input(false);
 }

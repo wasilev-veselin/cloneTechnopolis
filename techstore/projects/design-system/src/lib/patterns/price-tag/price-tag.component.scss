@@ -1,6 +1,13 @@
 :host {
   display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
   color: #0f172a;
   font-size: 1.125rem;
   font-weight: 800;
+}
+
+.price-tag__currency,
+.price-tag__amount {
+  display: inline-block;
 }

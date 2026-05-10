@@ -12,6 +12,11 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 :host(.primary) button {
   background: #0f766e;
   color: #ffffff;

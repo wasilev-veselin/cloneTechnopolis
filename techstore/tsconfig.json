@@ -6,9 +6,6 @@
     "paths": {
       "@techstore/design-system": [
         "./projects/design-system/src/public-api.ts"
-      ],
-      "@techstore/shared-util": [
-        "./projects/shared-util/src/public-api.ts"
       ]
     },
     "strict": true,
@@ -50,12 +47,6 @@
     },
     {
       "path": "./projects/design-system/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/shared-util/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/shared-util/tsconfig.spec.json"
     }
   ]
 }
