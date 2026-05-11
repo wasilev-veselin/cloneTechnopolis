@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,6 +8,7 @@ import {
   resource,
 } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
+import { isApplicationError } from '../../../../core/errors/application-error';
 import { CartStore } from '../../../cart/store/cart.store';
 import { GalleryComponent } from '../../components/gallery/gallery.component';
 import { ProductPricePanelComponent } from '../../components/product-price-panel/product-price-panel.component';
@@ -40,10 +40,8 @@ export class ProductPageComponent {
   private readonly cartStore = inject(CartStore);
   private readonly productDetailsApiService = inject(ProductDetailsApiService);
 
-  // Bound from the `product/:productSlug` route param and used to load product details.
   readonly productSlug = input.required<string>();
 
-  // Loads the product details from the API whenever the route slug changes.
   protected readonly productResource = resource<ProductDetailsModel, string>({
     params: () => this.productSlug(),
     loader: ({ params }) => lastValueFrom(this.productDetailsApiService.getProduct(params)),
@@ -53,18 +51,16 @@ export class ProductPageComponent {
   protected readonly isProductNotFound = computed(() => {
     const error = this.productResource.error();
 
-    return error instanceof HttpErrorResponse && error.status === 404;
+    return isApplicationError(error) && error.code === 'NOT_FOUND';
   });
 
-  // API product value used by the rest of the page once loading succeeds.
   protected readonly product = computed(() =>
     this.productResource.hasValue() ? this.productResource.value() : null,
   );
 
-  // Picks the default API variant SKU and resets it when another product is loaded.
+  // linkedSignal resets selectedSku whenever a different product loads.
   protected readonly selectedSku = linkedSignal(() => getDefaultSku(this.product()));
 
-  // Finds the currently selected variant from the API variants list.
   protected readonly selectedVariant = computed(() =>
     this.product()?.variants.find((variant) => variant.sku === this.selectedSku()),
   );
@@ -73,7 +69,6 @@ export class ProductPageComponent {
     () => this.selectedVariant()?.availability ?? this.product()?.availability ?? null,
   );
 
-  // Uses the selected variant available count when the API provides it.
   protected readonly quantity = computed(
     () =>
       this.selectedAvailability()?.storesAvailableCount ??

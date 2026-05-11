@@ -2,6 +2,7 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { EMPTY, catchError, exhaustMap, pipe, tap } from 'rxjs';
+import { mapToApplicationError } from '../../../core/errors/application-error';
 import type { CartItem } from '../../cart/models/cart-item.model';
 import { CartStore } from '../../cart/store/cart.store';
 import { CheckoutApiService } from '../data-access/checkout-api.service';
@@ -82,8 +83,10 @@ export const CheckoutStore = signalStore(
                 });
               }),
               catchError((err: unknown) => {
+                const error = mapToApplicationError(err);
+
                 patchState(store, {
-                  errorMessage: err instanceof Error ? err.message : 'Грешка при изпращане на поръчката',
+                  errorMessage: error.message,
                   submitting: false,
                 });
                 return EMPTY;

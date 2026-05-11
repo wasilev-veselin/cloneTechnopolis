@@ -19,9 +19,6 @@ export class CheckoutApiService {
   private readonly httpClient = inject(HttpClient);
 
   submitOrder(request: SubmitOrderRequest): Observable<OrderConfirmation> {
-    return this.httpClient.post<OrderConfirmation>(
-      '/api/checkout/orders',
-      request,
-    );
+    return this.httpClient.post<OrderConfirmation>('/api/checkout/orders', request);
   }
 }
