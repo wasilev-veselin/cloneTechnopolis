@@ -1,0 +1,10 @@
+<section class="toast-stack" aria-live="assertive" aria-atomic="false">
+  @for (message of toastService.messages(); track message.id) {
+    <article class="toast" [class.toast-error]="message.type === 'error'">
+      <p>{{ message.message }}</p>
+      <button type="button" aria-label="Затвори съобщението" (click)="dismiss(message.id)">
+        &times;
+      </button>
+    </article>
+  }
+</section>
