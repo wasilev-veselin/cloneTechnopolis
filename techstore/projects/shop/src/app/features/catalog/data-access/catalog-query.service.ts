@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import type { CatalogQuery, CatalogSort } from '../models/catalog-query.model';
+import type { ParamMap } from '@angular/router';
+import type { CatalogQuery, CatalogSort, SpecFilter } from '../models/catalog-query.model';
 
 const ALL_CATEGORIES_SLUG = 'all';
 const DEFAULT_PAGE = 1;
@@ -15,6 +16,7 @@ export interface CatalogQueryInputs {
   categorySlug: string | null | undefined;
   sort: string | null | undefined;
   brand: string | null | undefined;
+  queryParamMap?: ParamMap;
   page: number;
   pageSize: number;
 }
@@ -28,6 +30,7 @@ export class CatalogQueryService {
     categorySlug,
     sort,
     brand,
+    queryParamMap,
     page,
     pageSize,
   }: CatalogQueryInputs): CatalogQuery {
@@ -42,11 +45,64 @@ export class CatalogQueryService {
             .map((b) => b.trim())
             .filter(Boolean)
         : [],
-      specFilters: [],
+      specFilters: this.createSpecFilters(queryParamMap),
       sort: this.validateSort(sort),
       page: Number.isFinite(page) && page > 0 ? page : DEFAULT_PAGE,
       pageSize: Number.isFinite(pageSize) && pageSize > 0 ? pageSize : DEFAULT_PAGE_SIZE,
     };
+  }
+
+  private createSpecFilters(queryParamMap: ParamMap | undefined): SpecFilter[] {
+    if (!queryParamMap) {
+      return [];
+    }
+
+    const filters = new Map<string, SpecFilter>();
+    const specParamPattern = /^spec\[([^\]]+)\](?:\[(min|max)\])?$/;
+
+    for (const key of queryParamMap.keys) {
+      const match = specParamPattern.exec(key);
+
+      if (!match) {
+        continue;
+      }
+
+      const [, code, rangeBound] = match;
+      const value = queryParamMap.get(key)?.trim();
+
+      if (!code || !value) {
+        continue;
+      }
+
+      if (rangeBound === 'min' || rangeBound === 'max') {
+        const numericValue = Number(value);
+
+        if (!Number.isFinite(numericValue)) {
+          continue;
+        }
+
+        const current = filters.get(code);
+        const rangeFilter: SpecFilter =
+          current?.type === 'range' ? current : { code, type: 'range' };
+
+        rangeFilter[rangeBound] = numericValue;
+        filters.set(code, rangeFilter);
+        continue;
+      }
+
+      const values = value
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+      if (values.length === 1) {
+        filters.set(code, { code, type: 'eq', value: values[0] });
+      } else if (values.length > 1) {
+        filters.set(code, { code, type: 'in', values });
+      }
+    }
+
+    return [...filters.values()];
   }
 
   private validateSort(value: string | null | undefined): CatalogSort | undefined {

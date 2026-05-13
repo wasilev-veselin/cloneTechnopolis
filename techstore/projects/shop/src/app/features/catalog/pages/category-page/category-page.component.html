@@ -10,8 +10,14 @@
   <div class="filters">
     <app-filter-panel
       [brands]="brands()"
+      [categories]="categories()"
+      [facets]="facets()"
+      [selectedCategoryCode]="selectedCategoryCode()"
       [selectedBrands]="selectedBrands()"
-      (brandsApplied)="setBrands($event)"
+      [selectedSpecFilters]="selectedSpecFilters()"
+      [selectedSort]="selectedSort()"
+      (categorySelected)="selectCategory($event)"
+      (filtersApplied)="setFilters($event)"
     />
   </div>
 

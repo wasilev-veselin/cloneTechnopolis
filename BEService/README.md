@@ -117,6 +117,9 @@ Query parameters:
 | --- | --- | --- | --- |
 | `categoryCode` | No | - | Filters products where `categoryIds` contains the value. |
 | `brand` | No | - | Filters by exact brand, case-insensitive. Multiple brands can be provided as a comma-separated list. |
+| `spec[code]` | No | - | Filters by exact spec value. Multiple values can be provided as a comma-separated list. Example: `spec[storage]=128GB,256GB`. |
+| `spec[code][min]` | No | - | Filters numeric spec values greater than or equal to the provided value. Example: `spec[battery][min]=4000`. |
+| `spec[code][max]` | No | - | Filters numeric spec values less than or equal to the provided value. Example: `spec[battery][max]=5000`. |
 | `sort` | No | - | Supported values: `price-asc`, `price-desc`, `rating-desc`. Current `rating-desc` falls back to title ordering because mock products do not contain rating data. |
 | `page` | No | `1` | Page number. |
 | `pageSize` | No | `20` | Number of products per page. |
@@ -125,6 +128,12 @@ Example:
 
 ```bash
 curl "http://localhost:3000/api/products?categoryCode=laptops&brand=Lenovo,Sony&sort=price-asc&page=1&pageSize=10"
+```
+
+Phone filtering example:
+
+```bash
+curl "http://localhost:3000/api/products?categoryCode=phones&brand=Samsung,Xiaomi&spec[battery][min]=4000&spec[storage]=128GB,256GB&sort=price-asc&page=1&pageSize=24"
 ```
 
 Response:
@@ -161,7 +170,24 @@ Response:
   ],
   "totalCount": 1,
   "page": 1,
-  "pageSize": 10
+  "pageSize": 10,
+  "facets": [
+    {
+      "code": "battery",
+      "label": "Батерия",
+      "type": "range",
+      "values": []
+    },
+    {
+      "code": "storage",
+      "label": "Памет",
+      "type": "multiSelect",
+      "values": [
+        { "value": "128GB", "label": "128GB", "count": 2, "selected": true },
+        { "value": "256GB", "label": "256GB", "count": 2, "selected": true }
+      ]
+    }
+  ]
 }
 ```
 
@@ -238,6 +264,7 @@ Categories:
 
 - `laptops`
 - `business-laptops`
+- `phones`
 - `audio`
 - `headphones`
 - `monitors`
@@ -250,3 +277,7 @@ Products:
 | `100` | `lenovo-thinkpad` | `Lenovo` |
 | `101` | `sony-wh-1000xm6` | `Sony` |
 | `102` | `samsung-odyssey-oled` | `Samsung` |
+| `200` | `samsung-galaxy-s25` | `Samsung` |
+| `201` | `samsung-galaxy-s25-plus` | `Samsung` |
+| `202` | `xiaomi-14t-pro` | `Xiaomi` |
+| `203` | `xiaomi-redmi-note-14` | `Xiaomi` |

@@ -22,6 +22,15 @@ interface ProductsApiResponse {
   totalCount: number;
   page: number;
   pageSize: number;
+  facets?: CatalogFacet[];
+  breadcrumbs?: CatalogBreadcrumb[];
+  category?: CategorySummary;
+}
+
+export interface CatalogCategoryNode {
+  code: string;
+  name: string;
+  children: CatalogCategoryNode[];
 }
 
 type ProductApiItem = Omit<ProductSummary, 'image'> & {
@@ -33,6 +42,10 @@ export interface CatalogFacet {
   label: string;
   type: 'multiSelect' | 'range' | 'singleSelect';
   values: CatalogFacetValue[];
+  min?: number;
+  max?: number;
+  step?: number;
+  unit?: string;
 }
 
 export interface CatalogFacetValue {
@@ -64,6 +77,10 @@ const PLACEHOLDER_IMAGE_URL =
 })
 export class CatalogApiService {
   private readonly httpClient = inject(HttpClient);
+
+  getCategories(): Observable<CatalogCategoryNode[]> {
+    return this.httpClient.get<CatalogCategoryNode[]>('/api/categories');
+  }
 
   getProducts(query: CatalogQuery): Observable<CatalogResponse> {
     let params = new HttpParams().set('page', query.page).set('pageSize', query.pageSize);
@@ -98,6 +115,9 @@ export class CatalogApiService {
         page: response.page,
         pageSize: response.pageSize,
         sort: query.sort,
+        facets: response.facets,
+        breadcrumbs: response.breadcrumbs,
+        category: response.category,
       })),
     );
   }
