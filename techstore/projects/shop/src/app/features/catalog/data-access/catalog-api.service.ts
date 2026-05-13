@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import type { Observable } from 'rxjs';
+import { API_BASE_URL } from '../../../core/http/api-base-url.token';
 import type { ProductImage } from '../../../core/models/commerce.model';
 import type { CatalogQuery } from '../models/catalog-query.model';
 import type { ProductSummary } from '../models/product-summary.model';
@@ -77,9 +78,10 @@ const PLACEHOLDER_IMAGE_URL =
 })
 export class CatalogApiService {
   private readonly httpClient = inject(HttpClient);
+  private readonly apiBaseUrl = inject(API_BASE_URL);
 
   getCategories(): Observable<CatalogCategoryNode[]> {
-    return this.httpClient.get<CatalogCategoryNode[]>('/api/categories');
+    return this.httpClient.get<CatalogCategoryNode[]>(`${this.apiBaseUrl}/categories`);
   }
 
   getProducts(query: CatalogQuery): Observable<CatalogResponse> {
@@ -108,7 +110,7 @@ export class CatalogApiService {
       }
     }
 
-    return this.httpClient.get<ProductsApiResponse>('/api/products', { params }).pipe(
+    return this.httpClient.get<ProductsApiResponse>(`${this.apiBaseUrl}/products`, { params }).pipe(
       map((response) => ({
         products: response.items.map((item) => this.toProductSummary(item, query)),
         totalCount: response.totalCount,

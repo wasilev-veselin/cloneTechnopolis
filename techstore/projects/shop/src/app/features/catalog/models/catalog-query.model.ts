@@ -11,7 +11,8 @@ export interface CatalogQuery {
   pageSize: number;
 }
 
-export type CatalogSort = 'price-asc' | 'price-desc' | 'rating-desc';
+export const CATALOG_SORT_VALUES = ['price-asc', 'price-desc', 'rating-desc'] as const;
+export type CatalogSort = (typeof CATALOG_SORT_VALUES)[number];
 
 export type SpecFilterType = 'eq' | 'range' | 'in';
 

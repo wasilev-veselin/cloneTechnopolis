@@ -54,7 +54,7 @@
       <summary>Подреждане</summary>
       <label class="select-field">
         <span>Сортиране</span>
-        <select [value]="pendingSort() ?? ''" (change)="setSort($event)">
+        <select #sortSelect [value]="pendingSort() ?? ''" (change)="setSort(sortSelect.value)">
           <option value="">По подразбиране</option>
           @for (option of sortOptions; track option.value) {
             <option [value]="option.value">{{ option.label }}</option>
@@ -133,24 +133,33 @@
           }
 
           @case ('range') {
+            @let min = getRangeMin(facet);
+            @let max = getRangeMax(facet);
+            @let step = getRangeStep(facet);
+            @let lower = getRangeLowerValue(facet);
+            @let upper = getRangeUpperValue(facet);
+            @let rangeState = pendingRangeFilters().get(facet.code);
+
             <div class="range-slider">
               <input
+                #minRange
                 type="range"
                 [attr.aria-label]="facet.label + ' минимум'"
-                [min]="getRangeMin(facet)"
-                [max]="getRangeMax(facet)"
-                [step]="getRangeStep(facet)"
-                [value]="getRangeLowerValue(facet)"
-                (input)="setRangeFilter(facet.code, 'min', $event)"
+                [min]="min"
+                [max]="max"
+                [step]="step"
+                [value]="lower"
+                (input)="setRangeFilter(facet.code, 'min', minRange.value)"
               />
               <input
+                #maxRange
                 type="range"
                 [attr.aria-label]="facet.label + ' максимум'"
-                [min]="getRangeMin(facet)"
-                [max]="getRangeMax(facet)"
-                [step]="getRangeStep(facet)"
-                [value]="getRangeUpperValue(facet)"
-                (input)="setRangeFilter(facet.code, 'max', $event)"
+                [min]="min"
+                [max]="max"
+                [step]="step"
+                [value]="upper"
+                (input)="setRangeFilter(facet.code, 'max', maxRange.value)"
               />
             </div>
 
@@ -158,26 +167,28 @@
               <label class="number-field">
                 <span>От</span>
                 <input
+                  #minNum
                   type="number"
                   inputmode="decimal"
-                  [min]="getRangeMin(facet)"
-                  [max]="getRangeMax(facet)"
-                  [step]="getRangeStep(facet)"
-                  [value]="pendingRangeFilters().get(facet.code)?.min ?? getRangeMin(facet)"
-                  (input)="setRangeFilter(facet.code, 'min', $event)"
+                  [min]="min"
+                  [max]="max"
+                  [step]="step"
+                  [value]="rangeState?.min ?? min"
+                  (input)="setRangeFilter(facet.code, 'min', minNum.value)"
                 />
               </label>
 
               <label class="number-field">
                 <span>До</span>
                 <input
+                  #maxNum
                   type="number"
                   inputmode="decimal"
-                  [min]="getRangeMin(facet)"
-                  [max]="getRangeMax(facet)"
-                  [step]="getRangeStep(facet)"
-                  [value]="pendingRangeFilters().get(facet.code)?.max ?? getRangeMax(facet)"
-                  (input)="setRangeFilter(facet.code, 'max', $event)"
+                  [min]="min"
+                  [max]="max"
+                  [step]="step"
+                  [value]="rangeState?.max ?? max"
+                  (input)="setRangeFilter(facet.code, 'max', maxNum.value)"
                 />
               </label>
             </div>

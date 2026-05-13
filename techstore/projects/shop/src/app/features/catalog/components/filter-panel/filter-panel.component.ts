@@ -115,10 +115,7 @@ export class FilterPanelComponent {
       return selections;
     },
   });
-  protected readonly pendingSort = linkedSignal({
-    source: () => this.selectedSort(),
-    computation: (sort) => sort,
-  });
+  protected readonly pendingSort = linkedSignal(() => this.selectedSort());
   protected readonly sortOptions = SORT_OPTIONS;
   protected readonly hasFilters = computed(
     () =>
@@ -189,9 +186,7 @@ export class FilterPanelComponent {
     });
   }
 
-  protected setRangeFilter(code: string, bound: keyof RangeSelection, event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-
+  protected setRangeFilter(code: string, bound: keyof RangeSelection, value: string): void {
     this.pendingRangeFilters.update((current) => {
       const next = new Map(current);
       const range = next.get(code) ?? { min: '', max: '' };
@@ -233,8 +228,7 @@ export class FilterPanelComponent {
     return rawValue && Number.isFinite(value) ? value : this.getRangeMax(facet);
   }
 
-  protected setSort(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
+  protected setSort(value: string): void {
     this.pendingSort.set(this.toCatalogSort(value));
   }
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import type { ParamMap } from '@angular/router';
+import { CATALOG_SORT_VALUES } from '../models/catalog-query.model';
 import type { CatalogQuery, CatalogSort, SpecFilter } from '../models/catalog-query.model';
 
 const ALL_CATEGORIES_SLUG = 'all';
@@ -106,10 +107,8 @@ export class CatalogQueryService {
   }
 
   private validateSort(value: string | null | undefined): CatalogSort | undefined {
-    if (value === 'price-asc' || value === 'price-desc' || value === 'rating-desc') {
-      return value;
-    }
-
-    return undefined;
+    return (CATALOG_SORT_VALUES as readonly string[]).includes(value ?? '')
+      ? (value as CatalogSort)
+      : undefined;
   }
 }
